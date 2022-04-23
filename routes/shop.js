@@ -15,9 +15,9 @@ const User = new mongoose.model("User", userSchema);
 // add a shop
 router.post("/", verifyTokenAndAuthorization, async (req, res) => {
     const file = req?.files?.shop_logo;
-    console.log(req.user);
-    console.log(file);
-    console.log(file?.tempFilePath);
+    // console.log(req.user);
+    // console.log(file);
+    // console.log(file?.tempFilePath);
     try {
         await cloudinary.uploader.upload(file?.tempFilePath, (result) => {
             console.log(result);
@@ -56,9 +56,9 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
     await Shop.find()
         .populate("vendor", "-password -__v  -updatedAt")
-        .select(
-            "_id shop_logo shop_name shop_address shop_country shop_city shop_email shop_phone status"
-        )
+        // .select(
+        //     "_id shop_logo shop_name shop_address shop_country shop_city shop_email shop_phone status"
+        // )
         .sort({ _id: -1 })
         .exec((err, data) => {
             if (err) {
@@ -77,7 +77,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 });
 
 // get a single shop data
-router.get("/:id", verifyTokenAndAdminOrVendor, async (req, res) => {
+router.get("/:id", async (req, res) => {
     try {
         const shop = await Shop.findById(req.params.id);
         res.status(200).json({
