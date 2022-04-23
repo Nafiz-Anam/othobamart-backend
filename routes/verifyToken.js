@@ -107,7 +107,7 @@ const verifyTokenAndSuperAdminOrVendororCustomer = (req, res, next) => {
         }
     });
 };
-// all exports hahaha
+// all exports
 module.exports = {
     verifyTokenAndAuthorization,
     verifyTokenAndAdmin,
