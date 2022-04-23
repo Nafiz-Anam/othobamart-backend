@@ -116,5 +116,6 @@ module.exports = {
     verifyTokenAndSuperAdmin,
     verifyTokenAndCustomer,
     verifyTokenAndVendor,
+    verifyToken,
     verifyTokenAndSuperAdminOrVendororCustomer,
 };
