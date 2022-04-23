@@ -115,79 +115,153 @@ router.get("/:id", async (req, res) => {
 
 // add a product
 router.post("/", verifyTokenAndAdminOrVendor, async (req, res) => {
+    // console.log("user : ", req.user);
     const file = req.files.photo;
     let product_id;
     try {
-        await cloudinary.uploader.upload(file.tempFilePath, async (result) => {
-            const filePath = result.secure_url;
-            const newProduct = new Product({
-                ...req.body,
-                product_img: filePath,
-                shop: req.user.shop_id,
-            });
-            const addProduct = await newProduct.save();
-            product_id = addProduct._id;
-            await Shop.updateOne(
-                {
-                    _id: req.user.shop_id,
-                },
-                {
-                    $push: {
-                        shop_products: addProduct._id,
-                    },
-                }
-            );
+        const uploadedRes = await cloudinary.uploader.upload(
+            file.tempFilePath,
+            {
+                upload_preset: "othobamart_products",
+            }
+        );
+        // console.log("uploadedRes", uploadedRes);
+        const filePath = uploadedRes.secure_url;
+        // make a new product
+        const newProduct = new Product({
+            ...req.body,
+            photo: filePath,
+            shop: req.user.shop_id,
         });
-        if (req.files.gallery !== "") {
-            let galleryImg = req.files?.gallery;
-            // checking if multi images
-            const isArr = Array.isArray(galleryImg);
-            if (isArr) {
-                galleryImg.map(async (item) => {
-                    await cloudinary.uploader.upload(
-                        item.tempFilePath,
+        // console.log("newProduct", newProduct);
+        const addedProduct = await newProduct.save();
+        product_id = addedProduct._id;
+        await Shop.updateOne(
+            {
+                _id: req.user.shop_id,
+            },
+            {
+                $push: {
+                    shop_products: product_id,
+                },
+            }
+        );
 
-                        async (req, res) => {
-                            // await console.log(res.secure_url);
-                            await Product.updateOne(
-                                {
-                                    _id: product_id,
-                                },
-                                {
-                                    $push: {
-                                        gallery: res.secure_url,
-                                    },
-                                }
-                            );
+        if (req.files.gallery) {
+            const images = req.files.gallery;
+            if (Array.isArray(images)) {
+                // console.log("images Array : ", images);
+                images.map(async (item) => {
+                    let multiGalleryRes = await cloudinary.uploader.upload(
+                        item.tempFilePath,
+                        {
+                            upload_preset: "othobamart_products",
+                        }
+                    );
+                    await Product.updateOne(
+                        {
+                            _id: product_id,
+                        },
+                        {
+                            $push: {
+                                gallery: multiGalleryRes.secure_url,
+                            },
                         }
                     );
                 });
             } else {
-                // console.log(galleryImg);
-                await cloudinary.uploader.upload(
-                    galleryImg.tempFilePath,
-                    async (req, res) => {
-                        // await console.log(res.secure_url);
-                        await Product.updateOne(
-                            {
-                                _id: pro_id,
-                            },
-                            {
-                                $push: {
-                                    gallery: res.secure_url,
-                                },
-                            }
-                        );
+                // console.log("image : ", images);
+                let singleGallery = await cloudinary.uploader.upload(
+                    images.tempFilePath,
+                    {
+                        upload_preset: "othobamart_products",
+                    }
+                );
+                await Product.updateOne(
+                    {
+                        _id: product_id,
+                    },
+                    {
+                        $push: {
+                            gallery: singleGallery.secure_url,
+                        },
                     }
                 );
             }
         }
+        // console.log("addedProduct", addedProduct);
+
+        // await cloudinary.uploader.upload(file.tempFilePath, async (result) => {
+        //     console.log("result",);
+        //     const filePath = result.secure_url;
+        //     const newProduct = new Product({
+        //         ...req.body,
+        //         product_img: filePath,
+        //         shop: req.user.shop_id,
+        //     });
+        //     const addProduct = await newProduct.save();
+        //     product_id = addProduct._id;
+        //     await Shop.updateOne(
+        //         {
+        //             _id: req.user.shop_id,
+        //         },
+        //         {
+        //             $push: {
+        //                 shop_products: addProduct._id,
+        //             },
+        //         }
+        //     );
+        // });
+        // if (req.files.gallery !== "") {
+        //     let galleryImg = req.files?.gallery;
+        //     // checking if multi images
+        //     const isArr = Array.isArray(galleryImg);
+        //     if (isArr) {
+        //         galleryImg.map(async (item) => {
+        //             await cloudinary.uploader.upload(
+        //                 item.tempFilePath,
+
+        //                 async (req, res) => {
+        //                     // await console.log(res.secure_url);
+        //                     await Product.updateOne(
+        //                         {
+        //                             _id: product_id,
+        //                         },
+        //                         {
+        //                             $push: {
+        //                                 gallery: res.secure_url,
+        //                             },
+        //                         }
+        //                     );
+        //                 }
+        //             );
+        //         });
+        //     } else {
+        //         // console.log(galleryImg);
+        //         await cloudinary.uploader.upload(
+        //             galleryImg.tempFilePath,
+        //             async (req, res) => {
+        //                 // await console.log(res.secure_url);
+        //                 await Product.updateOne(
+        //                     {
+        //                         _id: pro_id,
+        //                     },
+        //                     {
+        //                         $push: {
+        //                             gallery: res.secure_url,
+        //                         },
+        //                     }
+        //                 );
+        //             }
+        //         );
+        //     }
+        // }
         res.status(200).json({
             status: 0,
             message: "Product added successfully!",
         });
     } catch (err) {
-        // console.log(err);
+        console.log(err);
         res.status(500).json({
             status: 1,
             error: "There was a server side error!",
