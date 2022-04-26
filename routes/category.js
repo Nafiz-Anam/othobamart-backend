@@ -26,25 +26,55 @@ router.post("/", verifyTokenAndAdminOrVendor, async (req, res) => {
 });
 
 // get all categories
+// router.get("/", async (req, res) => {
+//     await Category.find()
+//         .sort({ _id: -1 })
+//         .select(" -updatedAt -__v")
+//         .exec((err, data) => {
+//             if (err) {
+//                 res.status(500).json({
+//                     status: 1,
+//                     error: "There was a server side error!",
+//                 });
+//             } else {
+//                 res.status(200).json({
+//                     status: 0,
+//                     result: data,
+//                     message: "All category data retrieve successfully!",
+//                 });
+//             }
+//         });
+// });
+
 router.get("/", async (req, res) => {
-    await Category.find()
-        .sort({ _id: -1 })
-        .populate("subCategories", " -updatedAt")
-        .select(" -updatedAt")
-        .exec((err, data) => {
-            if (err) {
-                res.status(500).json({
-                    status: 1,
-                    error: "There was a server side error!",
-                });
-            } else {
-                res.status(200).json({
-                    status: 0,
-                    result: data,
-                    message: "All category data retrieve successfully!",
-                });
-            }
+    // console.log(req.query.key);
+    try {
+        let query = {};
+        let regex;
+        if (req.query.key) {
+            regex = new RegExp(req.query.key, "i");
+            query = {
+                $or: [
+                    {
+                        category_name: regex,
+                    },
+                ],
+            };
+        }
+        // console.log(query);
+        const data = await Category.find(query).sort({ _id: -1 });
+        res.status(200).json({
+            status: 0,
+            result: data,
+            message: "Search data retrieve successfully!",
         });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            status: 1,
+            error: "There was a server side error!",
+        });
+    }
 });
 
 module.exports = router;
