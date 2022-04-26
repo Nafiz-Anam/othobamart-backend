@@ -31,6 +31,7 @@ router.post("/place", verifyTokenAndAuthorization, async (req, res) => {
         await newTracking.save();
         res.status(200).json({
             status: 0,
+            data: addedOrder,
             message: "Order placed successfully!",
         });
     } catch (err) {
