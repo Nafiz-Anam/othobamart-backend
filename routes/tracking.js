@@ -8,10 +8,10 @@ const Tracking = new mongoose.model("Tracking", trackingSchema);
 const { verifyTokenAndAuthorization } = require("./verifyToken");
 
 // get tracking details
-router.get("/", verifyTokenAndAuthorization, async (req, res) => {
+router.get("/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
         const data = await Tracking.find({
-            tracking_id: req.body.tracking_id,
+            tracking_id: req.params.id,
         });
         res.status(200).json({
             status: 0,
@@ -27,7 +27,7 @@ router.get("/", verifyTokenAndAuthorization, async (req, res) => {
     }
 });
 
-// update status 
+// update status
 // approve product
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
