@@ -27,7 +27,7 @@ router.post("/", verifyTokenAndAdminOrVendor, async (req, res) => {
 });
 
 // get all categories
-router.get("/", verifyTokenAndAdminOrVendor, async (req, res) => {
+router.get("/", async (req, res) => {
     await Category.find()
         .sort({ _id: -1 })
         .populate("subCategories", " -updatedAt")
