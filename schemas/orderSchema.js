@@ -50,10 +50,20 @@ const orderSchema = mongoose.Schema(
             type: Number,
             required: true,
         },
+        tracking_id: {
+            type: Number,
+        },
         status: {
             type: String,
-            enum: ["pending", "accepted", "shipped", "completed", "cancelled"],
-            default: "pending",
+            enum: [
+                "placed",
+                "pending",
+                "cancelled",
+                "packaging",
+                "shipped",
+                "delivered",
+            ],
+            default: "placed",
         },
     },
     { timestamps: true }

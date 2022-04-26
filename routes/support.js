@@ -7,6 +7,7 @@ const Order = new mongoose.model("Order", orderSchema);
 const Support = new mongoose.model("Support", supportSchema);
 const { verifyTokenAndAuthorization } = require("./verifyToken");
 
+// add a support
 router.post("/", verifyTokenAndAuthorization, async (req, res) => {
     // console.log(req.body);
     const uniqueId = Date.now();
@@ -30,7 +31,7 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
     }
 });
 
-//UPDATE SINGLE USER
+//add replies
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
     // console.log(req.body);
     try {
@@ -56,7 +57,7 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
     }
 });
 
-// get all categories
+// get all supports
 router.get("/", verifyTokenAndAuthorization, async (req, res) => {
     await Support.find()
         .sort({ _id: -1 })

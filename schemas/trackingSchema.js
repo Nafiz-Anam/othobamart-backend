@@ -1,6 +1,6 @@
 // traicjingid
-// status 
-// time date 
+// status
+// time date
 
 const mongoose = require("mongoose");
 
@@ -9,15 +9,32 @@ const trackingSchema = mongoose.Schema(
         tracking_id: {
             type: Number,
         },
-        vendor_name: {
+        user_name: {
             type: String,
-            required: true,
-            unique: true,
+        },
+        user_id: {
+            type: String,
+        },
+        user_email: {
+            type: String,
+        },
+        user_address: {
+            type: String,
+        },
+        status: {
+            type: String,
+            enum: [
+                "placed",
+                "pending",
+                "cancelled",
+                "packaging",
+                "shipped",
+                "delivered",
+            ],
+            default: "placed",
         },
     },
     { timestamps: true }
 );
 
-module.exports = tagSchema;
-
-
+module.exports = trackingSchema;
