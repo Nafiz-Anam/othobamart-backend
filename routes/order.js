@@ -7,10 +7,11 @@ const trackingSchema = require("../schemas/trackingSchema");
 const Tracking = new mongoose.model("Tracking", trackingSchema);
 const {
     verifyTokenAndAuthorization,
-    verifyTokenAndSuperAdminOrVendor,
+    verifyTokenAndSuperAdminOrVendorAdmin,
     verifyTokenAndAdmin,
     verifyTokenAndAdminOrVendor,
     verifyTokenAndSuperAdminOrVendororCustomer,
+    verifyTokenAndVendorAdminCustomer,
 } = require("./verifyToken");
 
 router.post("/place", verifyTokenAndAuthorization, async (req, res) => {
@@ -43,34 +44,6 @@ router.post("/place", verifyTokenAndAuthorization, async (req, res) => {
     }
 });
 
-// get all orders
-router.get("/", verifyTokenAndAdmin, async (req, res) => {
-    try {
-        await Order.find()
-            .sort({ _id: -1 })
-            .select(" -__v -updatedAt")
-            .exec((err, data) => {
-                if (err) {
-                    res.status(500).json({
-                        status: 1,
-                        error: "There was a server side error!",
-                    });
-                } else {
-                    res.status(200).json({
-                        status: 0,
-                        result: data,
-                        message: "Order retrieve successfully!",
-                    });
-                }
-            });
-    } catch (err) {
-        res.status(500).json({
-            status: 1,
-            error: "There was a server side error!",
-        });
-    }
-});
-
 // change order status
 router.put("/:id", verifyTokenAndAdminOrVendor, async (req, res) => {
     try {
@@ -83,11 +56,6 @@ router.put("/:id", verifyTokenAndAdminOrVendor, async (req, res) => {
             },
             { new: true }
         );
-        // console.log(updatedOrder);
-        // const updatedTracking = await Tracking.find({
-        //     tracking_id: updatedOrder.tracking_id,
-        // });
-
         await Tracking.updateOne(
             {
                 tracking_id: updatedOrder.tracking_id,
@@ -135,25 +103,51 @@ router.get("/userid", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 // get single order data
-router.get(
-    "/:id",
-    verifyTokenAndSuperAdminOrVendororCustomer,
-    async (req, res) => {
-        try {
-            const data = await Order.findById(req.params.id);
-            res.status(200).json({
-                status: 0,
-                result: data,
-                message: "Order retrieve successfully!",
-            });
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({
-                status: 1,
-                error: "There was a server side error!",
-            });
-        }
+router.get("/:id", verifyTokenAndVendorAdminCustomer, async (req, res) => {
+    try {
+        const data = await Order.findById(req.params.id);
+        res.status(200).json({
+            status: 0,
+            result: data,
+            message: "Order retrieve successfully!",
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            status: 1,
+            error: "There was a server side error!",
+        });
     }
-);
+});
+
+router.get("/", verifyTokenAndVendorAdminCustomer, async (req, res) => {
+    // console.log(req.query.key);
+    try {
+        let query = {};
+
+        if (req.query.key) {
+            query = {
+                $or: [
+                    {
+                        tracking_id: req.query.key,
+                    },
+                ],
+            };
+        }
+        // console.log(query);
+        const data = await Order.find(query).sort({ _id: -1 });
+        res.status(200).json({
+            status: 0,
+            result: data,
+            message: "Order retrieve successfully!",
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            status: 1,
+            error: "There was a server side error!",
+        });
+    }
+});
 
 module.exports = router;

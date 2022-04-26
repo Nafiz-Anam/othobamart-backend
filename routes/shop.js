@@ -55,10 +55,7 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
 // get all shops
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
     await Shop.find()
-        .populate("vendor", "-password -__v  -updatedAt")
-        // .select(
-        //     "_id shop_logo shop_name shop_address shop_country shop_city shop_email shop_phone status"
-        // )
+        .populate("vendor shop_products", "-password -__v  -updatedAt")
         .sort({ _id: -1 })
         .exec((err, data) => {
             if (err) {
@@ -79,7 +76,10 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 // get a single shop data
 router.get("/:id", async (req, res) => {
     try {
-        const shop = await Shop.findById(req.params.id);
+        const shop = await Shop.findById(req.params.id).populate(
+            "vendor shop_products",
+            "-password -__v  -updatedAt"
+        );
         res.status(200).json({
             status: 0,
             result: shop,
@@ -105,10 +105,11 @@ router.put("/:id", verifyTokenAndAdminOrVendor, async (req, res) => {
         );
         res.status(200).json({
             status: 0,
-            result: updatedUser,
+            result: updatedShop,
             message: "Shop data updated successfully!",
         });
     } catch (err) {
+        console.log(err);
         res.status(500).json({
             status: 1,
             error: "There was a server side error!",

@@ -9,7 +9,7 @@ const {
     verifyTokenAndSuperAdmin,
 } = require("./verifyToken");
 
-// FETCH USERS
+// FETCH all USERS
 router.get("/all", verifyTokenAndAdmin, async (req, res) => {
     await User.find()
         .populate("shop", "-__v -updatedAt -vendor")
@@ -34,7 +34,10 @@ router.get("/all", verifyTokenAndAdmin, async (req, res) => {
 //GET SINGLE USER
 router.get("/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id).populate(
+            "shop",
+            "-__v -updatedAt -vendor"
+        );
         const { password, ...others } = user._doc;
         res.status(200).json({
             status: 0,
