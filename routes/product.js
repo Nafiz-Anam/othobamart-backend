@@ -51,6 +51,15 @@ router.get("/", async (req, res) => {
                     },
                 ],
             };
+        } else if (req.query.cat) {
+            regex = new RegExp(req.query.cat, "i");
+            query = {
+                $or: [
+                    {
+                        product_category: regex,
+                    },
+                ],
+            };
         }
         // console.log(query);
         const data = await Product.find(query).sort({ _id: -1 });
