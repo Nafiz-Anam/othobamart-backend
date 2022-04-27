@@ -60,6 +60,15 @@ router.get("/", async (req, res) => {
                     },
                 ],
             };
+        } else if (req.query.status) {
+            regex = new RegExp(req.query.status, "i");
+            query = {
+                $or: [
+                    {
+                        status: regex,
+                    },
+                ],
+            };
         }
         // console.log(query);
         const data = await Product.find(query).sort({ _id: -1 });
