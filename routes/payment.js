@@ -18,11 +18,12 @@ const Product = new mongoose.model("Product", productSchema);
 // console.log(item.quantity);
 
 router.post("/", async (req, res) => {
+    // console.log(req.body);
     try {
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
-            line_items: req.body.cart.map((item) => {
+            line_items: req.body.map((item) => {
                 return {
                     price_data: {
                         currency: "usd",
@@ -34,12 +35,12 @@ router.post("/", async (req, res) => {
                     quantity: item.item_qty,
                 };
             }),
-            success_url: `${process.env.CLIENT_URL}/thanksYou`,
+            success_url: `${process.env.CLIENT_URL}/thankYou`,
             cancel_url: `${process.env.CLIENT_URL}/home`,
         });
         res.json({ url: session.url });
     } catch (err) {
-        res.status(500).json({ error: e.message });
+        res.status(500).json({ error: err.message });
     }
 });
 
