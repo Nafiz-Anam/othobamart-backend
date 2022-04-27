@@ -22,20 +22,20 @@ router.post("/", async (req, res) => {
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
-            line_items: req.body.items.map((item) => {
+            line_items: req.body.cart.map((item) => {
                 return {
                     price_data: {
                         currency: "usd",
                         product_data: {
-                            name: item.name,
+                            name: item.item_name,
                         },
-                        unit_amount: item.price * 100,
+                        unit_amount: item.item_price * 100,
                     },
-                    quantity: item.quantity,
+                    quantity: item.item_qty,
                 };
             }),
-            success_url: `${process.env.CLIENT_URL}/admin/orders`,
-            cancel_url: `${process.env.CLIENT_URL}/admin/orders`,
+            success_url: `${process.env.CLIENT_URL}/thanksYou`,
+            cancel_url: `${process.env.CLIENT_URL}/home`,
         });
         res.json({ url: session.url });
     } catch (err) {
