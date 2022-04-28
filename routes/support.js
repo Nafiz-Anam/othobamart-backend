@@ -57,6 +57,30 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
     }
 });
 
+// approve product
+router.put("/status/:id", verifyTokenAndAuthorization, async (req, res) => {
+    try {
+        const changeStatus = await Support.findByIdAndUpdate(
+            req.params.id,
+            {
+                $set: {
+                    status: req.body.status,
+                },
+            },
+            { new: true }
+        );
+        res.status(200).json({
+            status: 0,
+            message: "Support status changed successfully!",
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 1,
+            error: "There was a server side error!",
+        });
+    }
+});
+
 // get all supports
 router.get("/", verifyTokenAndAuthorization, async (req, res) => {
     try {

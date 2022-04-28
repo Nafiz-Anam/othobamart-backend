@@ -52,7 +52,7 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
     }
 });
 
-// get all shops
+// get all shops data
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
     await Shop.find()
         .populate("vendor shop_products", "-password -__v  -updatedAt")
