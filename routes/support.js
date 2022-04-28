@@ -59,23 +59,35 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
 
 // get all supports
 router.get("/", verifyTokenAndAuthorization, async (req, res) => {
-    await Support.find()
-        .sort({ _id: -1 })
-        .select(" -updatedAt -__v")
-        .exec((err, data) => {
-            if (err) {
-                res.status(500).json({
-                    status: 1,
-                    error: "There was a server side error!",
-                });
-            } else {
-                res.status(200).json({
-                    status: 0,
-                    result: data,
-                    message: "All supports retrieve successfully!",
-                });
-            }
+    try {
+        let query = {};
+        let regex;
+        if (req.query.key) {
+            regex = new RegExp(req.query.key, "i");
+            query = {
+                $or: [
+                    {
+                        user_email: regex,
+                    },
+                ],
+            };
+        }
+        const data = await Support.find(query)
+            .sort({ _id: -1 })
+            .select(" -updatedAt -__v")
+            .exec();
+        res.status(200).json({
+            status: 0,
+            result: data,
+            message: "All supports retrieve successfully!",
         });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            status: 1,
+            error: "There was a server side error!",
+        });
+    }
 });
 
 // get single product data
@@ -95,5 +107,22 @@ router.get("/:id", async (req, res) => {
         });
     }
 });
+// // get single product data
+// router.get("/user", async (req, res) => {
+//     try {
+//         const data = await Support.findById(req.params.id);
+//         res.status(200).json({
+//             status: 0,
+//             result: data,
+//             message: "Support retrieve successfully!",
+//         });
+//     } catch (err) {
+//         // console.log(err);
+//         res.status(500).json({
+//             status: 1,
+//             error: "There was a server side error!",
+//         });
+//     }
+// });
 
 module.exports = router;

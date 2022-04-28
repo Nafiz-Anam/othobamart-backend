@@ -8,6 +8,9 @@ const supportSchema = mongoose.Schema(
         user_name: {
             type: String,
         },
+        user_email: {
+            type: String,
+        },
         support_title: {
             type: String,
         },
