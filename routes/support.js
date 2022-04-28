@@ -90,8 +90,8 @@ router.get("/", verifyTokenAndAuthorization, async (req, res) => {
     }
 });
 
-// get single product data
-router.get("/:id", async (req, res) => {
+// get single support data
+router.get("/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
         const data = await Support.findById(req.params.id);
         res.status(200).json({
@@ -107,22 +107,5 @@ router.get("/:id", async (req, res) => {
         });
     }
 });
-// // get single product data
-// router.get("/user", async (req, res) => {
-//     try {
-//         const data = await Support.findById(req.params.id);
-//         res.status(200).json({
-//             status: 0,
-//             result: data,
-//             message: "Support retrieve successfully!",
-//         });
-//     } catch (err) {
-//         // console.log(err);
-//         res.status(500).json({
-//             status: 1,
-//             error: "There was a server side error!",
-//         });
-//     }
-// });
 
 module.exports = router;
