@@ -19,7 +19,7 @@ const verifyToken = (req, res, next) => {
 // customer
 const verifyTokenAndCustomer = (req, res, next) => {
     verifyToken(req, res, () => {
-        if (req.user.isCustomer) {
+        if (req.user?.isCustomer) {
             next();
         } else {
             res.status(403).json("Unauthorized request!");
@@ -30,7 +30,7 @@ const verifyTokenAndCustomer = (req, res, next) => {
 // admin verify
 const verifyTokenAndAdmin = (req, res, next) => {
     verifyToken(req, res, () => {
-        if (req.user.isAdmin) {
+        if (req.user?.isAdmin) {
             next();
         } else {
             res.status(403).json("Unauthorized request!");
@@ -41,7 +41,7 @@ const verifyTokenAndAdmin = (req, res, next) => {
 // vendor verify
 const verifyTokenAndVendor = (req, res, next) => {
     verifyToken(req, res, () => {
-        if (req.user.isVendor) {
+        if (req.user?.isVendor) {
             next();
         } else {
             res.status(403).json("Unauthorized request!");
@@ -63,7 +63,7 @@ const verifyTokenAndSuperAdmin = (req, res, next) => {
 // admin or customer
 const verifyTokenAndAuthorization = (req, res, next) => {
     verifyToken(req, res, () => {
-        if (req.user.isAdmin || req.user.isCustomer) {
+        if (req.user?.isAdmin || req.user?.isCustomer) {
             next();
         } else {
             res.status(403).json("Unauthorized request!");
@@ -74,7 +74,7 @@ const verifyTokenAndAuthorization = (req, res, next) => {
 //admin or vendor
 const verifyTokenAndAdminOrVendor = (req, res, next) => {
     verifyToken(req, res, () => {
-        if (req.user.isAdmin || req.user.isVendor) {
+        if (req.user?.isAdmin || req.user?.isVendor) {
             next();
         } else {
             res.status(403).json("Unauthorized request!");
@@ -85,7 +85,7 @@ const verifyTokenAndAdminOrVendor = (req, res, next) => {
 //admin or vendor or superadmin
 const verifyTokenAndSuperAdminOrVendorAdmin = (req, res, next) => {
     verifyToken(req, res, () => {
-        if (req.user.isAdmin || req.user.isVendor || req.user.isSuperAdmin) {
+        if (req.user?.isAdmin || req.user?.isVendor || req.user?.isSuperAdmin) {
             next();
         } else {
             res.status(403).json("Unauthorized request!");
@@ -95,7 +95,7 @@ const verifyTokenAndSuperAdminOrVendorAdmin = (req, res, next) => {
 //admin or vendor or customer
 const verifyTokenAndVendorAdminCustomer = (req, res, next) => {
     verifyToken(req, res, () => {
-        if (req.user.isAdmin || req.user.isVendor || req.user.isCustomer) {
+        if (req.user?.isAdmin || req.user?.isVendor || req.user?.isCustomer) {
             next();
         } else {
             res.status(403).json("Unauthorized request!");
@@ -106,10 +106,10 @@ const verifyTokenAndVendorAdminCustomer = (req, res, next) => {
 const verifyTokenAndSuperAdminOrVendororCustomer = (req, res, next) => {
     verifyToken(req, res, () => {
         if (
-            req.user.isAdmin ||
-            req.user.isVendor ||
-            req.user.isSuperAdmin ||
-            req.user.isCustomer
+            req.user?.isAdmin ||
+            req.user?.isVendor ||
+            req.user?.isSuperAdmin ||
+            req.user?.isCustomer
         ) {
             next();
         } else {

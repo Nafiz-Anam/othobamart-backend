@@ -79,12 +79,12 @@ router.put("/:id", verifyTokenAndAdminOrVendor, async (req, res) => {
 });
 
 // find a user's orders
-router.get("/userid", verifyTokenAndAuthorization, async (req, res) => {
+router.get("/user/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
         const data = await Order.find({
             $or: [
                 {
-                    user_id: req.query.id,
+                    user_id: req.params.id,
                 },
             ],
         }).sort({ _id: -1 });
