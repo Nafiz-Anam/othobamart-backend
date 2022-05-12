@@ -89,7 +89,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// get single product data
+// get single blog data
 router.get("/:id", async (req, res) => {
     try {
         const data = await Blog.findById(req.params.id);
