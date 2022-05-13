@@ -7,7 +7,7 @@ const Subscribe = new mongoose.model("Subscribe", subsSchema);
 const { verifyTokenAndAuthorization } = require("./verifyToken");
 
 router.post("/", verifyTokenAndAuthorization, async (req, res) => {
-    // console.log(req.body);
+    console.log(req.body);
     const newSubs = new Subscribe(req.body);
     try {
         const addedSubs = await newSubs.save();
@@ -16,7 +16,7 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
             message: "Subs added successfully!",
         });
     } catch (err) {
-        // console.log(err);
+        console.log(err);
         res.status(500).json({
             status: 1,
             error: "There was a server side error!",

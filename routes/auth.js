@@ -93,21 +93,35 @@ router.post("/register/vendor", async (req, res) => {
             process.env.PASS_SECRET
         ).toString(),
     });
-    await newVendor.save((err) => {
-        if (err) {
-            // console.log(err);
-            res.status(500).json({
-                status: 1,
-                error: "There was a server side error!",
-            });
-        } else {
-            res.status(200).json({
-                status: 0,
-                data: newVendor,
-                message: "Vendor added successfully!",
-            });
-        }
-    });
+    try {
+        const addedVendor = await newVendor.save();
+        const accessToken = await jwt.sign(
+            {
+                id: addedVendor._id,
+                isAdmin: addedVendor.isAdmin,
+                isSuperAdmin: addedVendor.isSuperAdmin,
+                isCustomer: addedVendor.isCustomer,
+                isVendor: addedVendor.isVendor,
+                vendor_status: addedVendor.vendor_status,
+                shop_id: addedVendor?.shop,
+            },
+            process.env.JWT_SEC,
+            { expiresIn: "1d" }
+        );
+
+        res.status(200).json({
+            status: 0,
+            data: addedVendor,
+            accessToken,
+            message: "Vendor added successfully!",
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            status: 1,
+            error: "There was a server side error!",
+        });
+    }
 });
 
 module.exports = router;
