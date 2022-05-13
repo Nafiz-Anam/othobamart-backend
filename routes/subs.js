@@ -3,17 +3,17 @@ const { default: mongoose } = require("mongoose");
 const router = express.Router();
 
 const subsSchema = require("../schemas/subsSchema");
-const Subscribe = new mongoose.model("Subscribe", subsSchema);
+const Subscriber = new mongoose.model("Subscriber", subsSchema);
 const { verifyTokenAndAuthorization } = require("./verifyToken");
 
 router.post("/", verifyTokenAndAuthorization, async (req, res) => {
-    console.log(req.body);
-    const newSubs = new Subscribe(req.body);
+    // console.log(req.body);
+    const newSubscriber = new Subscriber(req.body);
     try {
-        const addedSubs = await newSubs.save();
+        const addedData = await newSubscriber.save();
         res.status(200).json({
             status: 0,
-            message: "Subs added successfully!",
+            message: "subscriber added successfully!",
         });
     } catch (err) {
         console.log(err);
@@ -26,9 +26,9 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
 
 // get all tags
 router.get("/", verifyTokenAndAuthorization, async (req, res) => {
-    await Subscribe.find()
+    await Subscriber.find()
         .sort({ _id: -1 })
-        .select(" -updatedAt")
+        .select("-__v -updatedAt")
         .exec((err, data) => {
             if (err) {
                 res.status(500).json({
@@ -39,7 +39,7 @@ router.get("/", verifyTokenAndAuthorization, async (req, res) => {
                 res.status(200).json({
                     status: 0,
                     result: data,
-                    message: "All subs retrieve successfully!",
+                    message: "All subscriber retrieve successfully!",
                 });
             }
         });
