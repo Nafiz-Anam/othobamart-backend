@@ -6,7 +6,7 @@ const subsSchema = require("../schemas/subsSchema");
 const Subscriber = new mongoose.model("Subscriber", subsSchema);
 const { verifyTokenAndAuthorization } = require("./verifyToken");
 
-router.post("/", verifyTokenAndAuthorization, async (req, res) => {
+router.post("/",  async (req, res) => {
     // console.log(req.body);
     const newSubscriber = new Subscriber(req.body);
     try {
