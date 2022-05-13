@@ -108,7 +108,6 @@ router.post("/register/vendor", async (req, res) => {
             process.env.JWT_SEC,
             { expiresIn: "1d" }
         );
-
         res.status(200).json({
             status: 0,
             data: addedVendor,
