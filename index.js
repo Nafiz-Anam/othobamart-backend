@@ -16,6 +16,8 @@ const trackingRoute = require("./routes/tracking");
 const blogRoute = require("./routes/blog");
 const reviewRoute = require("./routes/review");
 const subscriberRoute = require("./routes/subs");
+const conversationRoute = require("./routes/conversations");
+const messageRoute = require("./routes/messages");
 
 require("dotenv").config();
 const app = express();
@@ -54,6 +56,8 @@ async function run() {
         app.use("/blog", blogRoute);
         app.use("/review", reviewRoute);
         app.use("/subscriber", subscriberRoute);
+        app.use("/conversation", conversationRoute);
+        app.use("/message", messageRoute);
     } finally {
         // await client.close();
     }

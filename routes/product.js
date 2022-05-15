@@ -164,7 +164,6 @@ router.post("/", verifyTokenAndAdminOrVendor, async (req, res) => {
                 },
             }
         );
-
         if (req.files.gallery) {
             const images = req.files.gallery;
             if (Array.isArray(images)) {

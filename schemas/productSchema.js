@@ -22,7 +22,7 @@ const productSchema = mongoose.Schema(
             required: true,
         },
         product_category: {
-            type: Array,
+            type: String,
             required: true,
         },
         product_tags: {

@@ -1,0 +1,55 @@
+const express = require("express");
+const { default: mongoose } = require("mongoose");
+const router = express.Router();
+const conversationSchema = require("../schemas/conversationSchema");
+const Conversation = new mongoose.model("Conversation", conversationSchema);
+
+//new conv
+
+router.post("/", async (req, res) => {
+    // console.log(req.body);
+    const newConversation = new Conversation({
+        members: [
+            req.body.newConversation.senderId,
+            req.body.newConversation.receiverId,
+        ],
+    });
+    // console.log(newConversation);
+    try {
+        const savedConversation = await newConversation.save();
+        res.status(200).json(savedConversation);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+});
+
+//get conv of a user
+
+router.get("/:userId", async (req, res) => {
+    try {
+        const conversation = await Conversation.find({
+            members: { $in: [req.params.userId] },
+        });
+        res.status(200).json(conversation);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+// get conv includes two userId
+
+router.get("/find/:firstUserId/:secondUserId", async (req, res) => {
+    try {
+        const conversation = await Conversation.findOne({
+            members: {
+                $all: [req.params.firstUserId, req.params.secondUserId],
+            },
+        });
+        res.status(200).json(conversation);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+module.exports = router;
