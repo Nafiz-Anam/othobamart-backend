@@ -46,8 +46,8 @@ const userSchema = mongoose.Schema(
         },
         shop_apply: {
             type: String,
-            enum: [true, false],
-            default: false,
+            enum: ["true", "false"],
+            default: "false",
         },
         vendor_status: {
             type: String,
