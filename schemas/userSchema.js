@@ -44,6 +44,11 @@ const userSchema = mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: "Blog",
         },
+        shop_apply: {
+            type: String,
+            enum: [true, false],
+            default: false,
+        },
         vendor_status: {
             type: String,
             enum: ["pending", "approved", "rejected"],

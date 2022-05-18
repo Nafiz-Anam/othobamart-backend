@@ -35,6 +35,7 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
                 {
                     $set: {
                         shop: addShop._id,
+                        shop_apply: "true",
                     },
                 }
             );
@@ -53,7 +54,7 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 // get all shops data
-router.get("/", verifyTokenAndAdmin, async (req, res) => {
+router.get("/", async (req, res) => {
     await Shop.find()
         .populate("vendor shop_products", "-password -__v  -updatedAt")
         .sort({ _id: -1 })

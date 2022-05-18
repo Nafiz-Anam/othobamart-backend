@@ -108,10 +108,13 @@ router.post("/register/vendor", async (req, res) => {
             process.env.JWT_SEC,
             { expiresIn: "1d" }
         );
+        const newData = {
+            ...addedVendor?._doc,
+            accessToken,
+        };
         res.status(200).json({
             status: 0,
-            data: addedVendor,
-            accessToken,
+            newData,
             message: "Vendor added successfully!",
         });
     } catch (err) {
