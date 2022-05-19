@@ -5,7 +5,7 @@ const { cloudinary } = require("../helper/cloudinary.config");
 const router = express.Router();
 const productSchema = require("../schemas/productSchema");
 const Product = new mongoose.model("Product", productSchema);
-const shopSchema = require("../schemas/shopSchema");
+const shopSchema = require("../schemas/storeSchema");
 const Shop = new mongoose.model("Shop", shopSchema);
 
 // get all products

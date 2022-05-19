@@ -3,49 +3,52 @@ const { default: mongoose } = require("mongoose");
 const router = express.Router();
 const {
     verifyTokenAndAdminOrVendor,
-    verifyTokenAndAdmin,
     verifyTokenAndAuthorization,
 } = require("./verifyToken");
 const { cloudinary } = require("../helper/cloudinary.config");
-const shopSchema = require("../schemas/shopSchema");
-const Shop = new mongoose.model("Shop", shopSchema);
+const storeSchema = require("../schemas/storeSchema");
+const Store = new mongoose.model("Store", storeSchema);
 const userSchema = require("../schemas/userSchema");
 const User = new mongoose.model("User", userSchema);
 
 // add a shop
 router.post("/", verifyTokenAndAuthorization, async (req, res) => {
-    const file = req?.files?.shop_logo;
+    const file = req.files?.shop_logo;
+    // console.log(req.body);
     // console.log(req.user);
     // console.log(file);
     // console.log(file?.tempFilePath);
     try {
-        await cloudinary.uploader.upload(file?.tempFilePath, (result) => {
-            console.log(result);
-            const filePath = result?.secure_url;
-            const newShop = new Shop({
-                ...req.body,
-                vendor: req.user.id,
-                shop_logo: filePath,
-            });
-            const addShop = newShop.save();
-            User.updateOne(
-                {
-                    _id: req.user.id,
-                },
-                {
-                    $set: {
-                        shop: addShop._id,
-                        shop_apply: "true",
-                    },
-                }
-            );
+        const uploadedRes = await cloudinary.uploader.upload(file.tempFilePath);
+        // await cloudinary.uploader.upload(file.tempFilePath, (result) => {
+        // console.log(result);
+        const filePath = uploadedRes.secure_url;
+        const newShop = new Store({
+            ...req.body,
+            vendor: req.user.id,
+            shop_logo: filePath,
         });
+        // console.log("newShop", newShop);
+        const addShop = await newShop.save();
+        // console.log("addShop", addShop);
+        await User.updateOne(
+            {
+                _id: req.user.id,
+            },
+            {
+                $set: {
+                    shop: addShop._id,
+                    shop_apply: "true",
+                },
+            }
+        );
+        // });
         res.status(200).json({
             status: 0,
             message: "Shop data added successfully!",
         });
     } catch (err) {
-        console.log(err);
+        console.log("err", err);
         res.status(500).json({
             status: 1,
             error: "There was a server side error!",
@@ -55,7 +58,7 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
 
 // get all shops data
 router.get("/", async (req, res) => {
-    await Shop.find()
+    await Store.find()
         .populate("vendor shop_products", "-password -__v  -updatedAt")
         .sort({ _id: -1 })
         .exec((err, data) => {
@@ -77,7 +80,7 @@ router.get("/", async (req, res) => {
 // get a single shop data
 router.get("/:id", async (req, res) => {
     try {
-        const shop = await Shop.findById(req.params.id).populate(
+        const shop = await Store.findById(req.params.id).populate(
             "vendor shop_products",
             "-password -__v  -updatedAt"
         );
@@ -97,7 +100,7 @@ router.get("/:id", async (req, res) => {
 // update a shop
 router.put("/:id", verifyTokenAndAdminOrVendor, async (req, res) => {
     try {
-        const updatedShop = await Shop.findByIdAndUpdate(
+        const updatedShop = await Store.findByIdAndUpdate(
             req.params.id,
             {
                 $set: req.body,

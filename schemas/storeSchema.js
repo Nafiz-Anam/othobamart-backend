@@ -1,16 +1,11 @@
 const mongoose = require("mongoose");
 
-const vendorSchema = mongoose.Schema(
+const storeSchema = mongoose.Schema(
     {
         shop_logo: {
             type: String,
         },
         vendor_name: {
-            type: String,
-            required: true,
-            unique: true,
-        },
-        vendor_email: {
             type: String,
             required: true,
             unique: true,
@@ -52,4 +47,4 @@ const vendorSchema = mongoose.Schema(
     { timestamps: true }
 );
 
-module.exports = vendorSchema;
+module.exports = storeSchema;
