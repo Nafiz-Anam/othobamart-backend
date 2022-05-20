@@ -6,7 +6,7 @@ const router = express.Router();
 const productSchema = require("../schemas/productSchema");
 const Product = new mongoose.model("Product", productSchema);
 const shopSchema = require("../schemas/storeSchema");
-const Shop = new mongoose.model("Shop", shopSchema);
+const Shop = new mongoose.model("Store", shopSchema);
 
 // get all products
 // router.get("/", async (req, res) => {

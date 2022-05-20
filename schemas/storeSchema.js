@@ -37,6 +37,11 @@ const storeSchema = mongoose.Schema(
         shop_phone: {
             type: String,
         },
+        shop_status: {
+            type: String,
+            enum: ["pending", "approved", "rejected"],
+            default: "pending",
+        },
         shop_products: [
             {
                 type: mongoose.Types.ObjectId,

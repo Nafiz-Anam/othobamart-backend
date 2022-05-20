@@ -7,12 +7,12 @@ const User = new mongoose.model("User", userSchema);
 
 //login
 router.post("/login", async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     try {
         const user = await User.findOne({
             user_name: req.body.user_name,
         });
-        console.log(user);
+        // console.log(user);
         !user &&
             res.status(500).json({
                 status: 1,

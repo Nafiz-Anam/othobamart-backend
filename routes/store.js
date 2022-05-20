@@ -121,4 +121,43 @@ router.put("/:id", verifyTokenAndAdminOrVendor, async (req, res) => {
     }
 });
 
+// approve shop
+router.put("/status/:id", verifyTokenAndAdminOrVendor, async (req, res) => {
+    // console.log(req.params.id);
+    try {
+        const changeStatus = await Store.findByIdAndUpdate(
+            req.params.id,
+            {
+                $set: {
+                    shop_status: req.body.status,
+                },
+            },
+            { new: true }
+        );
+        // console.log(changeStatus);
+        const vendorId = changeStatus?.vendor.valueOf();
+        // console.log(vendorId);
+        if (req.body.status === "approved") {
+            const userUpdate = await User.findByIdAndUpdate(
+                vendorId,
+                {
+                    $set: {
+                        vendor_status: "approved",
+                    },
+                },
+                { new: true }
+            );
+        }
+        res.status(200).json({
+            status: 0,
+            message: "Shop status changed successfully!",
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 1,
+            error: "There was a server side error!",
+        });
+    }
+});
+
 module.exports = router;
