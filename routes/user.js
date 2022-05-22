@@ -17,6 +17,7 @@ router.get("/all", verifyTokenAndAdmin, async (req, res) => {
         .sort({ _id: -1 })
         .exec((err, data) => {
             if (err) {
+                console.log(err);
                 res.status(500).json({
                     status: 1,
                     error: "There was a server side error!",
