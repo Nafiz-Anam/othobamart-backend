@@ -38,6 +38,12 @@ const productSchema = mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: "Shop",
         },
+        reviews: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: "Review",
+            },
+        ],
         status: {
             type: String,
             enum: [

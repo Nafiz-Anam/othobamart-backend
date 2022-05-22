@@ -6,12 +6,9 @@ const reviewSchema = mongoose.Schema(
             type: String,
             required: true,
         },
-        reviewer_position: {
-            type: String,
-        },
-        reviewer_email: {
-            type: String,
-            required: true,
+        reviewer_id: {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
         },
         review: {
             type: String,
